@@ -1,5 +1,6 @@
 import 'dart:async';
 
+
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:image/image.dart' as images;
 import '../ref_entities/epub_book_ref.dart';
@@ -13,8 +14,8 @@ class BookCoverReader {
     if (metaItems == null || metaItems.isEmpty) return null;
 
     var coverMetaItem = metaItems.firstWhereOrNull(
-        (EpubMetadataMeta metaItem) =>
-            metaItem.Name != null && metaItem.Name!.toLowerCase() == 'cover');
+            (EpubMetadataMeta metaItem) =>
+        metaItem.Name != null && metaItem.Name!.toLowerCase() == 'cover');
     if (coverMetaItem == null) return null;
     if (coverMetaItem.Content == null || coverMetaItem.Content!.isEmpty) {
       throw Exception(
@@ -23,8 +24,8 @@ class BookCoverReader {
 
     var coverManifestItem = bookRef.Schema!.Package!.Manifest!.Items!
         .firstWhereOrNull((EpubManifestItem manifestItem) =>
-            manifestItem.Id!.toLowerCase() ==
-            coverMetaItem.Content!.toLowerCase());
+    manifestItem.Id!.toLowerCase() ==
+        coverMetaItem.Content!.toLowerCase());
     if (coverManifestItem == null) {
       throw Exception(
           'Incorrect EPUB manifest: item with ID = \"${coverMetaItem.Content}\" is missing.');
@@ -37,9 +38,11 @@ class BookCoverReader {
     }
 
     coverImageContentFileRef = bookRef.Content!.Images![coverManifestItem.Href];
-    var coverImageContent =
-        await coverImageContentFileRef!.readContentAsBytes();
-    var retval = images.decodeImage(coverImageContent);
+    // Ensure that coverImageContent is correctly recognized as a Uint8List
+    List<int> coverImageContent = await coverImageContentFileRef!.readContentAsBytes();
+
+    // Decode the image from bytes
+    images.Image? retval = images.decodeImage(coverImageContent);
     return retval;
   }
 }
