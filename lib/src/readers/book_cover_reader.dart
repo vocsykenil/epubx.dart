@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:image/image.dart' as images;
-import 'dart:typed_data'; // Import for Uint8List
 import '../ref_entities/epub_book_ref.dart';
 import '../ref_entities/epub_byte_content_file_ref.dart';
 import '../schema/opf/epub_manifest_item.dart';
