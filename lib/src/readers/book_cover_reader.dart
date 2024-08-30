@@ -1,6 +1,5 @@
 import 'dart:async';
-
-
+import 'dart:typed_data';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:image/image.dart' as images;
@@ -39,11 +38,13 @@ class BookCoverReader {
     }
 
     coverImageContentFileRef = bookRef.Content!.Images![coverManifestItem.Href];
-    // Ensure that coverImageContent is correctly recognized as a Uint8List
-    var coverImageContent = await coverImageContentFileRef!.readContentAsBytes();
+    List<int> coverImageContent = await coverImageContentFileRef!.readContentAsBytes();
 
-    // Decode the image from bytes
-    var retval = images.decodeImage(coverImageContent);
+    // Convert List<int> to Uint8List
+    Uint8List uint8ListCoverImageContent = Uint8List.fromList(coverImageContent);
+
+    // Decode the image from Uint8List
+    images.Image? retval = images.decodeImage(uint8ListCoverImageContent);
     return retval;
   }
 }
